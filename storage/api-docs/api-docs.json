@@ -1,0 +1,233 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Route Service API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/routes": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "List all routes",
+                "operationId": "25d3d0d0f5d12b021dc6272e30293e95",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Create a new route",
+                "operationId": "b33c4c1179bc9292122b3d06edfeaff1",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "driver_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "vehicle_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_location": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "end_location": {
+                                        "type": "string",
+                                        "example": "Bandung"
+                                    },
+                                    "distance_km": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 150.5
+                                    },
+                                    "estimated_time_minutes": {
+                                        "type": "integer",
+                                        "example": 180
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Route created"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/routes/{id}": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Get route by ID",
+                "operationId": "e2a8d29a88e0b4b65e46b742ac68f79e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Route not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update a route",
+                "operationId": "deeadf381bc7b3d6471d4c17c0cfe8ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_location": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "end_location": {
+                                        "type": "string",
+                                        "example": "Bandung"
+                                    },
+                                    "distance_km": {
+                                        "type": "number",
+                                        "example": 150.5
+                                    },
+                                    "estimated_time_minutes": {
+                                        "type": "integer",
+                                        "example": 180
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "in_progress"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Route updated"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "404": {
+                        "description": "Route not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Delete a route",
+                "operationId": "90c67fe2765db8d58d5efc5a24316169",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Route deleted"
+                    },
+                    "404": {
+                        "description": "Route not found"
+                    }
+                }
+            }
+        },
+        "/api/routes/{id}/status": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update route status",
+                "operationId": "48f54911435e039ce27355573943077c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "completed"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status updated"
+                    },
+                    "400": {
+                        "description": "Invalid status"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Routes",
+            "description": "Routes"
+        }
+    ]
+}
