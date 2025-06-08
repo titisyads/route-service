@@ -1,0 +1,785 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Route Service API",
+        "description": "API documentation for Route Service",
+        "contact": {
+            "email": "admin@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/routes": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Create a new route",
+                "operationId": "b33c4c1179bc9292122b3d06edfeaff1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "driver_id",
+                                    "vehicle_id",
+                                    "start_location",
+                                    "end_location",
+                                    "start_time"
+                                ],
+                                "properties": {
+                                    "driver_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "vehicle_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_location": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "end_location": {
+                                        "type": "string",
+                                        "example": "Bandung"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-06-08T08:00:00Z"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Express delivery",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Route created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Route created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "driver_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "driver": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "license_number": {
+                                                            "type": "string",
+                                                            "example": "LIC123456"
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Joko Nawar"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "JagoNawar@yopmail.com"
+                                                        },
+                                                        "status": {
+                                                            "type": "string",
+                                                            "example": "on_duty"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "vehicle_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "vehicle": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "example": "Car"
+                                                        },
+                                                        "plate_number": {
+                                                            "type": "string",
+                                                            "example": "B 1234 ABC"
+                                                        },
+                                                        "status": {
+                                                            "type": "string",
+                                                            "example": "InUse"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "start_location": {
+                                                    "type": "string",
+                                                    "example": "Jakarta"
+                                                },
+                                                "end_location": {
+                                                    "type": "string",
+                                                    "example": "Bandung"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "Scheduled"
+                                                },
+                                                "start_time": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-08T08:00:00Z"
+                                                },
+                                                "end_time": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "notes": {
+                                                    "type": "string",
+                                                    "example": "Express delivery",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Driver or Vehicle not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Driver not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create route",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to create route"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/routes/{id}": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Get a specific route",
+                "operationId": "e2a8d29a88e0b4b65e46b742ac68f79e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Route ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Route details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "driver_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "driver": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "license_number": {
+                                                            "type": "string",
+                                                            "example": "LIC123456"
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Joko Nawar"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "JagoNawar@yopmail.com"
+                                                        },
+                                                        "status": {
+                                                            "type": "string",
+                                                            "example": "on_duty"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "vehicle_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "vehicle": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "example": "Car"
+                                                        },
+                                                        "plate_number": {
+                                                            "type": "string",
+                                                            "example": "B 1234 ABC"
+                                                        },
+                                                        "status": {
+                                                            "type": "string",
+                                                            "example": "InUse"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "start_location": {
+                                                    "type": "string",
+                                                    "example": "Jakarta"
+                                                },
+                                                "end_location": {
+                                                    "type": "string",
+                                                    "example": "Bandung"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "Scheduled"
+                                                },
+                                                "start_time": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "end_time": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "notes": {
+                                                    "type": "string",
+                                                    "example": "Express delivery",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized access"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Route not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Route not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch route",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to fetch route"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/routes/active": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Get active routes",
+                "operationId": "921207bb6bdac71ca1f9b35c16f50d8a",
+                "responses": {
+                    "200": {
+                        "description": "List of active routes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "driver_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "driver": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "license_number": {
+                                                                "type": "string",
+                                                                "example": "LIC123456"
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Joko Nawar"
+                                                            },
+                                                            "email": {
+                                                                "type": "string",
+                                                                "example": "JagoNawar@yopmail.com"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "on_duty"
+                                                            }
+                                                        },
+                                                        "type": "object",
+                                                        "nullable": true
+                                                    },
+                                                    "vehicle_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "vehicle": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Car"
+                                                            },
+                                                            "plate_number": {
+                                                                "type": "string",
+                                                                "example": "B 1234 ABC"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "InUse"
+                                                            }
+                                                        },
+                                                        "type": "object",
+                                                        "nullable": true
+                                                    },
+                                                    "start_location": {
+                                                        "type": "string",
+                                                        "example": "Jakarta"
+                                                    },
+                                                    "end_location": {
+                                                        "type": "string",
+                                                        "example": "Bandung"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "InProgress"
+                                                    },
+                                                    "start_time": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "end_time": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "nullable": true
+                                                    },
+                                                    "notes": {
+                                                        "type": "string",
+                                                        "example": "Express delivery",
+                                                        "nullable": true
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch active routes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to fetch active routes"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/routes/{id}/status": {
+            "put": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update route status",
+                "operationId": "442f24238c87bbc0ea6928e405c65348",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Route ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Scheduled",
+                                            "InProgress",
+                                            "Completed",
+                                            "Cancelled"
+                                        ],
+                                        "example": "InProgress"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Route status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Route status updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "driver_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "driver": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "license_number": {
+                                                            "type": "string",
+                                                            "example": "LIC123456"
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Joko Nawar"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "JagoNawar@yopmail.com"
+                                                        },
+                                                        "status": {
+                                                            "type": "string",
+                                                            "example": "available"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "vehicle_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "vehicle": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "example": "Car"
+                                                        },
+                                                        "plate_number": {
+                                                            "type": "string",
+                                                            "example": "B 1234 ABC"
+                                                        },
+                                                        "status": {
+                                                            "type": "string",
+                                                            "example": "Available"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "start_location": {
+                                                    "type": "string",
+                                                    "example": "Jakarta"
+                                                },
+                                                "end_location": {
+                                                    "type": "string",
+                                                    "example": "Bandung"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "InProgress"
+                                                },
+                                                "start_time": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "end_time": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "notes": {
+                                                    "type": "string",
+                                                    "example": "Express delivery",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Route not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Route not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update route status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to update route status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Routes",
+            "description": "Routes"
+        }
+    ]
+}
