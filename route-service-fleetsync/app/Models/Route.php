@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Route extends Model
 {
@@ -19,4 +20,8 @@ class Route extends Model
         'end_time',
         'notes'
     ];
+    public function setStartTimeAttribute($value)
+    {
+        $this->attributes['start_time'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }

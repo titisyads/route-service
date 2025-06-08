@@ -7,6 +7,7 @@ use App\Http\Resources\RouteResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 /**
  * @OA\Info(
@@ -37,7 +38,7 @@ class RouteController extends Controller
      */
     private function getDriverServiceClient()
     {
-        return new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001']);
+        return new \GuzzleHttp\Client(['base_uri' => 'http://localhost:3001']);
     }
 
     /**
@@ -124,44 +125,57 @@ class RouteController extends Controller
                 'vehicle_id' => 'required|integer',
                 'start_location' => 'required|string|max:255',
                 'end_location' => 'required|string|max:255',
-                'start_time' => 'required|date',
+                'start_time' => 'required|date_format:Y-m-d H:i:s',
                 'notes' => 'nullable|string',
             ]);
-            Log::debug('Driver Client Base URI: ' . $validated);
+            Log::debug('Validated Data', $validated);
 
             // Verify driver availability
             $driverClient = $this->getDriverServiceClient();
-            Log::debug('Driver Client Base URI: ' . $driverClient);
+            Log::debug('Driver Client Base URI', ['base_uri' => 'http://localhost:8001']);
             try {
-                $driverResponse = $driverClient->get('/api/drivers/' . $validated['driver_id']);
+                $driverResponse = $driverClient->get("http://localhost:8001/api/drivers/{$validated['driver_id']}");
                 $driver = json_decode($driverResponse->getBody()->getContents(), true);
-                $driverResponseBodyString = $driverResponse->getBody()->getContents();
-                Log::debug('Driver Service Response Body: ' . $driverResponseBodyString);
-                $driver = json_decode($driverResponseBodyString, true);
-                Log::debug('Parsed Driver Data: ' . json_encode($driver));
-                // Log::debug('Driver Service Response: ' . $driverResponse->getBody()->getContents());
-                // Log::debug('Parsed Driver Data: ' . json_encode($driver));
+                Log::debug('Driver Service Response', ['response' => $driverResponse->getBody()->getContents()]);
+                Log::debug('Parsed Driver Data', ['driver' => $driver]);
             } catch (\Exception $e) {
                 Log::error('Failed to fetch driver: ' . $e->getMessage());
                 return response()->json(['error' => 'Driver not found'], 404);
             }
 
-            if (!isset($driver['id']) || strtolower($driver['status']) !== 'available') {
+            if (!isset($driver['data']['id']) || strtolower($driver['data']['status']) !== 'available') {
+                Log::debug('Driver validation failed', ['driver' => $driver]);
                 return response()->json(['error' => 'Driver not available or not found'], 400);
             }
 
             // Verify vehicle availability
+            // Verify vehicle availability
             $vehicleClient = $this->getVehicleServiceClient();
+            Log::debug('Vehicle Client Base URI', ['base_uri' => 'http://localhost:8000']);
             try {
-                $vehicleResponse = $vehicleClient->get('/api/vehicles/' . $validated['vehicle_id']);
+                $vehicleResponse = $vehicleClient->get("http://localhost:8000/api/vehicles/{$validated['vehicle_id']}");
                 $vehicle = json_decode($vehicleResponse->getBody()->getContents(), true);
+                Log::debug('Vehicle Service Response', ['response' => $vehicleResponse->getBody()->getContents()]);
+                Log::debug('Parsed Vehicle Data', ['vehicle' => $vehicle]);
+            } catch (\GuzzleHttp\Exception\ClientException $e) {
+                if ($e->getResponse()->getStatusCode() === 404) {
+                    Log::error('Vehicle not found: ' . $e->getMessage());
+                    return response()->json(['error' => 'Vehicle not found'], 404);
+                }
+                Log::error('Vehicle service unavailable: ' . $e->getMessage());
+                return response()->json(['error' => 'Vehicle service unavailable'], 503);
             } catch (\Exception $e) {
-                Log::error('Failed to fetch vehicle: ' . $e->getMessage());
-                return response()->json(['error' => 'Vehicle not found'], 404);
+                Log::error('Unexpected error fetching vehicle: ' . $e->getMessage());
+                return response()->json(['error' => 'Unexpected error fetching vehicle'], 500);
             }
 
-            if (!isset($vehicle['data']) || strtolower($vehicle['data']['status']) !== 'available') {
-                return response()->json(['error' => 'Vehicle not available or not found'], 400);
+            if (!isset($vehicle['data']['id'])) {
+                Log::debug('Vehicle not found', ['vehicle_id' => $validated['vehicle_id']]);
+                return response()->json(['error' => 'Vehicle not found'], 404);
+            }
+            if (strtolower($vehicle['data']['status']) !== 'available') {
+                Log::debug('Vehicle not available', ['vehicle' => $vehicle]);
+                return response()->json(['error' => 'Vehicle is not available'], 400);
             }
 
             // Create route
@@ -169,23 +183,25 @@ class RouteController extends Controller
 
             // Update driver and vehicle status
             try {
-                $driverClient->put('/api/drivers/' . $validated['driver_id'], [
+                $driverClient->put("http://localhost:8001/api/drivers/{$validated['driver_id']}", [
                     'json' => [
-                        'license_number' => $driver['license_number'],
-                        'name' => $driver['name'],
-                        'email' => $driver['email'],
+                        'license_number' => $driver['data']['license_number'],
+                        'name' => $driver['data']['name'],
+                        'email' => $driver['data']['email'],
                         'status' => 'on_duty',
-                        'assigned_vehicle' => $validated['vehicle_id']
+                        'assigned_vehicle' => (string) $validated['vehicle_id']
                     ]
                 ]);
+                Log::info('Driver status updated to "on_duty" for ID: ' . $validated['driver_id']); // Tambahkan log untuk konfirmasi
 
-                $vehicleClient->put('/api/vehicles/' . $validated['vehicle_id'], [
+                $vehicleClient->put("http://localhost:8000/api/vehicles/{$validated['vehicle_id']}", [
                     'json' => [
                         'type' => $vehicle['data']['type'],
                         'plate_number' => $vehicle['data']['plate_number'],
                         'status' => 'InUse'
                     ]
                 ]);
+                Log::info('Vehicle status updated to "InUse" for ID: ' . $validated['vehicle_id']); // Tambahkan log untuk konfirmasi
             } catch (\Exception $e) {
                 // Rollback route creation if update fails
                 $route->delete();
@@ -199,6 +215,7 @@ class RouteController extends Controller
                 'data' => new RouteResource($route)
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation failed', ['errors' => $e->errors()]);
             return response()->json(['error' => $e->errors()], 400);
         } catch (\Exception $e) {
             Log::error('Failed to create route: ' . $e->getMessage());
