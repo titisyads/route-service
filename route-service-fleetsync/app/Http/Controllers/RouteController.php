@@ -28,7 +28,8 @@ class RouteController extends Controller
      */
     private function getVehicleServiceClient()
     {
-        return new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8000']);
+        $baseUri = env('VEHICLE_SERVICE_URL', 'http://localhost:8000');
+        return new \GuzzleHttp\Client(['base_uri' => $baseUri]);
     }
 
     /**
@@ -38,7 +39,8 @@ class RouteController extends Controller
      */
     private function getDriverServiceClient()
     {
-        return new \GuzzleHttp\Client(['base_uri' => 'http://localhost:3001']);
+        $baseUri = env('DRIVER_SERVICE_URL', 'http://localhost:8001');
+        return new \GuzzleHttp\Client(['base_uri' => $baseUri]);
     }
 
     /**
