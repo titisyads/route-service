@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
+{
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('driver_id'); // Remove constrained()
