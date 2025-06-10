@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Running driver service migrations.."
+echo "Running routes service migrations.."
 cd /app/route
 php artisan migrate
 
